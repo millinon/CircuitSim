@@ -2,20 +2,6 @@ using CircuitSim.Chips;
 
 namespace String
 {
-    public class EQ : BinaryComparator<string>
-    {
-        private static uint count = 0;
-
-        public EQ() : base($"StrEQ{count++}", (a, b) => a == b) { }
-    }
-
-    public class NEQ : BinaryComparator<string>
-    {
-        private static uint count = 0;
-
-        public NEQ() : base($"StrNEQ{count++}", (a, b) => a != b) { }
-    }
-
     public class Empty : Predicate<string>
     {
         private static uint count = 0;

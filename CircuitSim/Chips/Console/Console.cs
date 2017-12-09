@@ -140,18 +140,23 @@ namespace CircuitSim.Chips.Console
 
         public readonly WLInputs Inputs;
 
+        private string _str;
+
         public WriteLine() : base($"WriteLine{count++}")
         {
             Inputs = new WLInputs(this);
         }
 
-        public override void Compute() { }
+        public override void Compute()
+        {
+            _str = Inputs.Str.Value;
+        }
 
         public override void Set()
         {
             if (Inputs.Clk.Value)
             {
-                System.Console.WriteLine(Inputs.Str.Value);
+                System.Console.WriteLine(_str);
             }
         }
 
