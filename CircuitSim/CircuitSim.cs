@@ -842,7 +842,8 @@ namespace CircuitSim
 
             public Predicate(string ComponentName, Func<T, bool> Function) : base(ComponentName)
             {
-                _func = Function ?? throw new ArgumentException("Predicate requires a function, but one was not provided");
+                if(Function == null) throw new ArgumentException("Predicate requires a function, but one was not provided");
+                _func = Function;
 
                 Inputs = new Inputs<T>(this);
 
@@ -878,7 +879,8 @@ namespace CircuitSim
 
             public BinaryComparator(string ComponentName, Func<T, T, bool> Function) : base(ComponentName)
             {
-                _func = Function ?? throw new ArgumentException("BinaryComparator requires a function, but one was not provided");
+                if(Function == null) throw new ArgumentException("BinaryComparator requires a function, but one was not provided");
+                _func = Function;
 
                 Inputs = new Inputs<T, T>(this);
 
@@ -914,7 +916,8 @@ namespace CircuitSim
 
             public UnaryFunctor(string ComponentName, Func<T, U> Function) : base(ComponentName)
             {
-                _func = Function ?? throw new ArgumentException("UnaryFunctor requires a function, but one was not provided");
+                if(Function == null) throw new ArgumentException("UnaryFunctor requires a function, but one was not provided");
+                _func = Function;
 
                 Inputs = new Inputs<T>(this);
 
@@ -951,7 +954,8 @@ namespace CircuitSim
 
             public BinaryFunctor(string ComponentName, Func<T, U, V> Function) : base(ComponentName)
             {
-                _func = Function ?? throw new ArgumentException("UnaryFunctor requires a function, but one was not provided");
+                if(Function == null) throw new ArgumentException("BinaryFunctor requires a function, but one was not provided");
+                _func = Function;
 
                 Inputs = new Inputs<T, U>(this);
 
@@ -1397,14 +1401,14 @@ namespace CircuitSim
 
                 public override void Set()
                 {
-                    A.Value = (_val & 0b00000001) == 0b00000001;
-                    B.Value = (_val & 0b00000010) == 0b00000010;
-                    C.Value = (_val & 0b00000100) == 0b00000100;
-                    D.Value = (_val & 0b00001000) == 0b00001000;
-                    E.Value = (_val & 0b00010000) == 0b00010000;
-                    F.Value = (_val & 0b00100000) == 0b00100000;
-                    G.Value = (_val & 0b01000000) == 0b01000000;
-                    H.Value = (_val & 0b10000000) == 0b10000000;
+                    A.Value = (_val & 1) == 1;
+                    B.Value = (_val & (1 << 1)) == (1 << 1);
+                    C.Value = (_val & (1 << 2)) == (1 << 2);
+                    D.Value = (_val & (1 << 3)) == (1 << 3);
+                    E.Value = (_val & (1 << 4)) == (1 << 4);
+                    F.Value = (_val & (1 << 5)) == (1 << 5);
+                    G.Value = (_val & (1 << 6)) == (1 << 6);
+                    H.Value = (_val & (1 << 7)) == (1 << 7);
                 }
             }
         }
@@ -3747,7 +3751,7 @@ namespace CircuitSim
 
                 public override void Set()
                 {
-                    System.Console.ForegroundColor = Inputs.A.Value;
+                    System.Console.ForegroundColor = _color;
                 }
 
                 public override void Detach()
@@ -3805,7 +3809,7 @@ namespace CircuitSim
 
                 public override void Set()
                 {
-                    System.Console.BackgroundColor = Inputs.A.Value;
+                    System.Console.BackgroundColor = _color;
                 }
 
                 public override void Detach()
