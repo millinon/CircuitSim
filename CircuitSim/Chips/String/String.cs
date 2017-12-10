@@ -1,6 +1,4 @@
-using CircuitSim.Chips;
-
-namespace String
+namespace CircuitSim.Chips.String
 {
     public class Empty : Predicate<string>
     {
@@ -54,6 +52,59 @@ namespace String
         {
             state += increment;
             Tick();
+        }
+    }
+
+    public class Repeat : Component
+    {
+        private static uint count = 0;
+
+        public class RepeatInputs : Inputs
+        {
+            public Input<string> Str;
+            public Input<int> Num;
+
+            public RepeatInputs(Component component) : base(2)
+            {
+                Str = new Input<string>(component, "Str");
+                Num = new Input<int>(component, "Num");
+
+            }
+
+            public override void Detach()
+            {
+                Str.Detach();
+                Num.Detach();
+            }
+        }
+
+        public readonly RepeatInputs Inputs;
+
+        public readonly Outputs<string> Outputs;
+        private string _out;
+
+        public Repeat() : base($"StrRepeat{count++}")
+        {
+            Inputs = new RepeatInputs(this);
+
+            Outputs = new Outputs<string>(this);
+        }
+
+        public override void Compute()
+        {
+            _out = string.Concat(System.Linq.Enumerable.Repeat(Inputs.Str.Value, Inputs.Num.Value));
+        }
+
+        public override void Set()
+        {
+            Outputs.Out.Value = _out;
+        }
+
+        public override void Detach()
+        {
+            Inputs.Detach();
+
+            Outputs.Detach();
         }
     }
 }

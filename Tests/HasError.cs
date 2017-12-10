@@ -4,15 +4,18 @@ class HasErrorTest {
  
     public static void Main(string[] args)
     {
-        var inv = new CircuitSim.Chips.Integer.Arithmetic.Inv();
+        var div = new CircuitSim.Chips.Integer.Arithmetic.Div();
         var add = new CircuitSim.Chips.Integer.Arithmetic.Add();
 
-        inv.Inputs.A.Source = new CircuitSim.Chips.Input.Constant<int>(new int[] { 0 }).Outputs[0];
-        
-        add.Inputs[0].Source = inv.Outputs.Out;
-        add.Inputs[1].Source = new CircuitSim.Chips.Input.Constant<int>(new int[] { 2 }).Outputs[0];
+        var consts = new CircuitSim.Chips.Input.Constant<int>(new int[] { 1, 0, 2});
 
-        inv.Tick();
+        div.Inputs.A.Source = consts.Outputs[0];
+        div.Inputs.B.Source = consts.Outputs[1];
+
+        add.Inputs[0].Source = div.Outputs.Out;
+        add.Inputs[1].Source = consts.Outputs[2];
+
+        div.Tick();
 
         Console.Write("HasError works: ");
 
