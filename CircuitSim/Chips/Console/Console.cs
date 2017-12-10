@@ -141,6 +141,7 @@ namespace CircuitSim.Chips.Console
         public readonly WLInputs Inputs;
 
         private string _str;
+        private bool _clk;
 
         public WriteLine() : base($"WriteLine{count++}")
         {
@@ -150,11 +151,12 @@ namespace CircuitSim.Chips.Console
         public override void Compute()
         {
             _str = Inputs.Str.Value;
+            _clk = Inputs.Clk.Value;
         }
 
         public override void Set()
         {
-            if (Inputs.Clk.Value)
+            if (_clk)
             {
                 System.Console.WriteLine(_str);
             }
@@ -467,6 +469,66 @@ namespace CircuitSim.Chips.Console
         public override void Detach()
         {
             Outputs.Detach();
+        }
+    }
+
+    public class Beep : Component
+    {
+        private static uint count = 0;
+
+        public class BeepInputs : Inputs
+        {
+            private Input<bool> _clk;
+            public Input<bool> Clk
+            {
+                get
+                {
+                    return _clk;
+                }
+
+                set
+                {
+                    if(value != _clk)
+                    {
+                        if (_clk != null) _clk.Detach();
+                        _clk = value;
+                    }
+                }
+            }
+
+            public BeepInputs(Component component) : base(1)
+            {
+                Clk = new Input<bool>(component, "Clk");
+            }
+
+            public override void Detach()
+            {
+                Clk.Detach();
+            }
+        }
+
+        public readonly BeepInputs Inputs;
+
+        private bool _clk;
+
+        public Beep() : base($"Beep{count++}")
+        {
+            Inputs = new BeepInputs(this);
+        }
+
+        public override void Compute()
+        {
+            _clk = Inputs.Clk.Value;
+        }
+
+        public override void Set()
+        {
+            if(_clk) System.Console.Beep();
+        }
+
+        public override void Detach()
+        {
+            Inputs.Detach();
         }
     }
 }
