@@ -13,10 +13,8 @@ namespace ReadKeys
             ReadKey consoleKey = new ReadKey();
 
             Constant<ConsoleKey> key_dirs = new Constant<ConsoleKey>(new ConsoleKey[] { ConsoleKey.UpArrow, ConsoleKey.DownArrow, ConsoleKey.LeftArrow, ConsoleKey.RightArrow });
-            key_dirs.Tick();
 
             Constant<string> key_strs = new Constant<string>(new string[] { "UP", "DOWN", "LEFT", "RIGHT" });
-            key_strs.Tick();
 
             WriteLine writeUp = new WriteLine();
             WriteLine writeDn = new WriteLine();
