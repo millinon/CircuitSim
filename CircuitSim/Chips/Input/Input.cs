@@ -21,6 +21,8 @@ namespace CircuitSim.Chips.Input
             {
                 Outputs[i] = new Output<T>(this, $"Output{i}");
             }
+
+            Tick();
         }
 
         public Constant(T Value) : this(new T[] { Value }) { }

@@ -97,7 +97,11 @@ namespace CircuitSim.Chips
 
         public override void Compute()
         {
-            _out = _func(Inputs.A.Value);
+            try {
+                _out = _func(Inputs.A.Value);
+            } catch(Exception) {
+                HasError = true;
+            }
         }
 
         public override void Set()
@@ -134,7 +138,11 @@ namespace CircuitSim.Chips
 
         public override void Compute()
         {
-            _out = _func(Inputs.A.Value, Inputs.B.Value);
+            try {
+                _out = _func(Inputs.A.Value, Inputs.B.Value);
+            } catch(Exception) {
+                HasError = true;
+            }
         }
 
         public override void Detach()
@@ -171,7 +179,12 @@ namespace CircuitSim.Chips
 
         public override void Compute()
         {
-            _out = _func(Inputs.A.Value);
+            try {
+            
+                _out = _func(Inputs.A.Value);
+            } catch(Exception) {
+                HasError = true;
+            }
         }
 
         public override void Set()
@@ -209,7 +222,11 @@ namespace CircuitSim.Chips
 
         public override void Compute()
         {
-            _out = _func(Inputs.A.Value, Inputs.B.Value);
+            try {
+                _out = _func(Inputs.A.Value, Inputs.B.Value);
+            } catch(Exception) {
+                HasError = true;
+            }
         }
 
         public override void Set()

@@ -11,6 +11,17 @@ namespace CircuitSim
         // WARNING: this is a hack to make recursive chips work. You generally should not ever set this to true.
         public bool AllowRecursion = false;
 
+        private bool _error = false;
+        public bool HasError {
+            get {
+                return _error;
+            }
+
+            set {
+                _error = value;
+            }
+        }
+
         public readonly string Name;
 
         public Component(string ComponentName)
@@ -29,6 +40,7 @@ namespace CircuitSim
 
         public void Tick()
         {
+            HasError = false;
             if (_visited && !AllowRecursion) throw new Exception($"recursive Tick() detected on component {Name}");
 
             var visited = _visited;
@@ -67,8 +79,13 @@ namespace CircuitSim
         {
             get
             {
+                if(Source.Component.HasError) Component.HasError = true;
+                
                 if (Source != null) return Source.Value;
-                else throw new Exception($"input {Name} of component {Component.Name} is not connected to any output");
+                else
+                {
+                    throw new Exception($"input {Name} of component {Component.Name} is not connected to any output");
+                }
             }
         }
 
