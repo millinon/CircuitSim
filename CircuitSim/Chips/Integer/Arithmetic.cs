@@ -2,13 +2,6 @@ using System;
 
 namespace CircuitSim.Chips.Integer.Arithmetic
 {
-    public class Inv : UnaryFunctor<int, int>
-    {
-        private static uint count = 0;
-
-        public Inv() : base($"IntInv{count++}", a => 1 / a) { }
-    }
-
     public class Abs : UnaryFunctor<int, int>
     {
         private static uint count = 0;

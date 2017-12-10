@@ -115,7 +115,7 @@ public class Inv : Component
 
     public override void Compute()
     {
-        _out = 1 / Inputs.A.Value;
+        _out = 1.0 / Inputs.A.Value;
     }
 
     public override void Set()
@@ -145,7 +145,7 @@ public class Inv : Component
     public Outputs<double> Outputs;
 
     private Div div = new Div();
-    private Constant<double> one = new Constant<double>(new double[] { 1.0 });
+    private Constant<double> one = new Constant<double>(1.0);
     
     public Inv() : base($"FltInv{count++}")
     {
@@ -181,3 +181,30 @@ This approach produces the same result, and we didn't have to worry about the in
 * The division chip's B input has to be reassigned every time that Compute() is called since the main chip's Inputs.A may have been reassigned
 * We have to call div.Tick() since it is not going to Tick() automatically when the main chip's input changes
 
+---
+
+### Integration
+
+As CircuitSim is just a C# library, its components can be integrated with any C# application or library. The easiest way to do so is to initialize the CircuitSim components, ensure that each component's inputs are all connected to some other component's outputs. Your code can send values into a CircuitSim system using a CircuitSin.Input.GenericInput<T>, which provides a generic interface for setting a value. For example, you could do something like this:
+
+```csharp
+public static void Main(string[] args)
+{
+    var str_input = new CircuitSim.Input.GenericInput<string>();
+    ...
+    str_input.Value = "some string";
+    ...
+}
+```
+
+Likewise, for getting the output of a circuit, you can read the value of any output by accessing the output's Value field. For example, you could have something like this:
+
+```csharp
+public static void Main(string[] args)
+{
+    var abs = new CircuitSim.Integer.Arithmetic.Abs();
+    ... // perform some operation that assigns to abs.Inputs.A
+    int abs_val = abs.Outputs.Out.Value;
+    ...
+}
+```
