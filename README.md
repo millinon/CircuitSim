@@ -32,7 +32,7 @@ Every component has a few important methods:
 
 #### Tick()
 
-Tick() is simply a call to Compute() followed by a call to Set(). It is important to note that a call to Tick() will recursively call Tick() on components connected to outputs. This is fundamentally how CircuitSim works. Generally, we do not want c.Tick() to recursively call C.Tick() again, so there is a check that can be disabled.
+Tick() is simply a call to Compute() followed by a call to Set(). It is important to note that a call to Tick() will recursively call Tick() on components connected to outputs. This is fundamentally how CircuitSim works. Generally, we do not want c.Tick() to recursively call c.Tick() again, so there is a check that can be disabled.
 
 #### Compute()
 
@@ -49,11 +49,11 @@ Detach() is the method that disconnects all of a component's inputs and outputs.
 There are a few fields that can be accessed:
 
 * HasError: a component will set HasError to true if it is in an error state. For example, the integer division chip, upon dividing by zero, will throw an exception, which will be caught, and will then set its HasError to true.
-* AllowRecursion: this is a hack to enable some special chips (like [Map](https://github.com/millinon/CircuitSim/blob/master/CircuitSim/Chips/List/List.cs#L5) to work recursively. You generally should not set AllowRecursion to true, unless you find yourself in a situation where that would be the only solution.
+* AllowRecursion: this is a hack to enable some special chips (like [Map](https://github.com/millinon/CircuitSim/blob/master/CircuitSim/Chips/List/List.cs#L5)) to work recursively. You generally should not set AllowRecursion to true, unless you find yourself in a situation where that would be the only solution.
 
 ### Input
 
-An [input](https://github.com/millinon/CircuitSim/blob/master/CircuitSim/CircuitSim.cs#L55) is how a component gets the values that it computes its outputs from. As the Input class is a generic, an input can be of any type. I frequently use Input<T> where T is one of the following:
+An [input](https://github.com/millinon/CircuitSim/blob/master/CircuitSim/CircuitSim.cs#L55) is how a component gets the values that it computes its outputs from. As the Input class is a generic, an input can be of any type. I frequently use Input\<T\> where T is one of the following:
 
 * bool: digital input
 * int: integer input
