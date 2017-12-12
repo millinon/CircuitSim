@@ -411,7 +411,7 @@ namespace CircuitSim.Chips
         {
             if (numInputs < 2 || numInputs > 256)
             {
-                throw new Exception("Multiplexer requires between 2 and 255 inputs");
+                throw new Exception("Multiplexer requires between 2 and 256 inputs");
             }
             else if ((numInputs & (numInputs - 1)) != 0)
             {
@@ -450,8 +450,6 @@ namespace CircuitSim.Chips
 
             Out.Detach();
         }
-
-        public List<Output<T>> GetOutputs() => new List<Output<T>>() { Out };
     }
 
     public class DigitalMux : Multiplexer<bool>

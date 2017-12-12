@@ -64,10 +64,10 @@ An [input](https://github.com/millinon/CircuitSim/blob/master/CircuitSim/Circuit
 An input has a few fields:
 
 * Component: the component to which the input belongs
-* Source: this is the Output<T> from which the input should get its value
+* Source: this is the Output\<T\> from which the input should get its value
 * Value: this is the T, which returns the value from the connected output. If no output is connected, an exception is thrown.
 
-An input must be connected to exactly one output. To connect an Input to an Output, you can assign the Input's Source field to the Output. C#'s type safety will only allow you to connect an Input<T> to an Output<T>, which is the desired behavior.
+An input must be connected to exactly one output. To connect an Input to an Output, you can assign the Input's Source field to the Output. C#'s type safety will only allow you to connect an Input\<T\> to an Output\<T\>, which is the desired behavior.
 
 The classes [Inputs](https://github.com/millinon/CircuitSim/blob/master/CircuitSim/CircuitSim.cs#L110) and [InputSet](https://github.com/millinon/CircuitSim/blob/master/CircuitSim/CircuitSim.cs#L595) are collections of Inputs. The difference is that the Inputs class has its inputs named (A, B, C, ...), while the InputSet acts like an array of Inputs.
 
