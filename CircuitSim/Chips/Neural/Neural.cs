@@ -38,6 +38,12 @@ namespace CircuitSim.Chips.Neural
 
             this.NumInputs = NumInputs;
             Inputs = new InputSet<double>(NumInputs);
+            for(int i = 0; i < NumInputs; i++){
+                Inputs[i] = new Input<double>(this, $"In{i}");
+            }
+
+            Outputs = new Outputs<double>(this);
+
             Weights = new double[NumInputs];
 
             this.Phi = Phi;
@@ -123,20 +129,23 @@ namespace CircuitSim.Chips.Neural
             // initialize the inputs and 
             NumInputs = Layers[0];
             Inputs = new InputSet<double>(NumInputs);
+            for(int i = 0; i < NumInputs; i++){
+                Inputs[i] = new Input<double>(this, $"In{i}");
+            }
 
             NumOutputs = Layers[Layers.Length - 1];
             Outputs = new Output<double>[NumOutputs];
             for(int i = 0; i < NumOutputs; i++){
                 Outputs[i] = new Output<double>(this, $"Out{i}");
             }
-
+            
             Neurons = new Neuron[Layers.Length][];
 
             Neurons[0] = new Neuron[NumInputs];
             for(int j = 0; j < NumInputs; j++){
                 Neurons[0][j] = new Neuron(1, r);
             }
-
+            
             for(int i = 1; i < Layers.Length; i++){
                 Neurons[i] = new Neuron[Layers[i]];
 
@@ -206,8 +215,9 @@ namespace CircuitSim.Chips.Neural
 
         public override void Compute()
         {
-            for(int i = 0; i < Layers[0]; i++){
+            for(int i = 0; i < NumInputs; i++){
                 Neurons[0][i].Inputs[0] = Inputs[i];
+                Neurons[0][i].Tick();
             }
         }
 
