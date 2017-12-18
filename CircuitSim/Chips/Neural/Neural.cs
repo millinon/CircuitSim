@@ -198,8 +198,7 @@ namespace CircuitSim.Chips.Neural
                     gradient *= output * (1.0 - output);
 
                     for(int j = 0; j < neuron.NumInputs; j++){
-                        if(layer > 0) delta = -1.0 * LearningRate * Neurons[layer-1][j].Outputs.Out.Value * gradient;
-                        else delta = -1.0 * LearningRate * Inputs[j].Value * gradient;
+                        delta = -1.0 * LearningRate * Neurons[layer-1][j].Outputs.Out.Value * gradient;
                         neuron.Weights[j] += delta;
                     }
 
