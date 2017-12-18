@@ -13,7 +13,6 @@ namespace CircuitSim.Chips.Neural
         public readonly int NumInputs;
         public readonly double[] Weights;
         public readonly Func<double, double> Phi;
-        public readonly Func<double, double> DPhi;
          
         public double Bias = 0.0;
         public double BiasWeight = 0.0;
@@ -32,7 +31,7 @@ namespace CircuitSim.Chips.Neural
             }
         }
 
-        public Neuron(int NumInputs, Func<double, double> Phi, Func<double, double> DPhi, Random Random) : base($"Neuron{count++}")
+        public Neuron(int NumInputs, Func<double, double> Phi, Random Random) : base($"Neuron{count++}")
         {
             if(NumInputs <= 0) throw new Exception("Neuron must have a non-negative number of inputs");
 
@@ -47,12 +46,12 @@ namespace CircuitSim.Chips.Neural
             Weights = new double[NumInputs];
 
             this.Phi = Phi;
-            this.DPhi = DPhi;
 
-            for(int i = 0; i < NumInputs; i++) Weights[i] = Random.NextDouble() - 0.5;
+            for(int i = 0; i < NumInputs; i++) Weights[i] = (Random.NextDouble() - 0.5) * 5;
         }
 
-        public Neuron(int NumInputs, Random Random) : this(NumInputs, a => 1.0 / (1.0 + Math.Exp(-a)), a => Math.Exp(a) / Math.Pow(Math.Exp(a) + 1.0, 2.0) , Random) { }
+        public Neuron(int NumInputs, Random Random) : this(NumInputs, a => 1.0 / (1.0 + Math.Exp(-a)), Random) { }
+        public Neuron(int NumInputs, double Threshold, Random Random) : this(NumInputs, a => a >= Threshold ? 1.0 : 0.0, Random) { }
 
         public override void Compute()
         {
@@ -64,7 +63,7 @@ namespace CircuitSim.Chips.Neural
 
             InputSum = sum + Bias * BiasWeight;
 
-            _out = this.Phi(sum);
+            _out = this.Phi(InputSum);
         }
 
         public override void Set()
@@ -89,14 +88,11 @@ namespace CircuitSim.Chips.Neural
         public readonly Output<double>[] Outputs;
 
         public readonly int[] Layers;
-
+        
         public readonly int NumInputs;
         public readonly int NumOutputs;
 
         private Neuron[][] Neurons;
-
-        public readonly Func<double, double> Phi;
-        public readonly Func<double, double> DPhi;
 
         private double _bias = 0.0;
         public double Bias
@@ -117,7 +113,7 @@ namespace CircuitSim.Chips.Neural
             }
         }
 
-        public FeedForward(int[] Layers, Func<double, double> Phi, Func<double, double> DPhi) : base($"FeedForward{count++}")
+        public FeedForward(int[] Layers) : base($"FeedForward{count++}")
         {
             if(Layers == null || Layers.Length == 0) throw new ArgumentException("Empty Layers array passed to FeedForward constructor");
             else if(Layers.Length < 2) throw new ArgumentException("FeedForward requires at least two layers");
@@ -126,7 +122,6 @@ namespace CircuitSim.Chips.Neural
 
             this.Layers = Layers;
 
-            // initialize the inputs and 
             NumInputs = Layers[0];
             Inputs = new InputSet<double>(NumInputs);
             for(int i = 0; i < NumInputs; i++){
@@ -144,73 +139,74 @@ namespace CircuitSim.Chips.Neural
             Neurons[0] = new Neuron[NumInputs];
             for(int j = 0; j < NumInputs; j++){
                 Neurons[0][j] = new Neuron(1, r);
+                Neurons[0][j].Weights[0] = 1.0;
             }
             
             for(int i = 1; i < Layers.Length; i++){
                 Neurons[i] = new Neuron[Layers[i]];
 
                 for(int j = 0; j < Layers[i]; j++){
-                    Neurons[i][j] = new Neuron(Layers[i-1], Phi, DPhi, r);
+                    Neurons[i][j] = new Neuron(Layers[i-1], r);
 
                     for(int k = 0; k < Layers[i-1]; k++){
                         Neurons[i][j].Inputs[k].Source = Neurons[i-1][k].Outputs.Out;
                     }
                 }
             }
-
-            this.Phi = Phi;
-            this.DPhi = DPhi;
         }
 
-        public FeedForward(int[] Layers) : this(Layers, a => 1.0 / (1 + Math.Exp(-a)), a => Math.Exp(a) / Math.Pow(Math.Exp(a) + 1.0, 2.0) ) { }
-
-        public void BackPropagate(double[] Expected, double LearningRate, Func<double, double, double> Error, Func<double, double, double> DError)
+        public void BackPropagate(double[] Expected, double LearningRate)
         {
             if(Expected == null || Expected.Length != NumOutputs)
             {
                 throw new ArgumentException("Expected array passed to BackPropagate doesn't match NN outputs");
-            } else if(Error == null)
-            {
-                throw new ArgumentException("Error function is required for BackPropagate, but one was not provided");
-            } else if(DError == null)
-            {
-                throw new ArgumentException("DError function is required for BackPropagate, but one was not provided");
             }
 
-            double[] layergradients = new double[Layers.Length];
+            double[][] gradients = new double[Layers.Length][];
+            for(int i = 0; i < Layers.Length; i++){
+                gradients[i] = new double[Layers[i]];
+            }
+                        
+            double delta;
+            double gradient;
 
             for(int i = 0; i < NumOutputs; i++){
                 Neuron neuron = Neurons[Layers.Length-1][i];
                 double output = neuron.Outputs.Out.Value;
 
-                double gradient = DError(Expected[i], output) * DPhi(neuron.InputSum);
-                    
+                gradient = (output - Expected[i]) * output * (1.0 - output);
+
                 for(int j = 0; j < neuron.NumInputs; j++){
-                    neuron.Weights[j] += -1.0 * LearningRate * output * gradient;
+                    delta = -1.0 * LearningRate * Neurons[Layers.Length-2][j].Outputs.Out.Value * gradient;
+                    neuron.Weights[j] += delta;
                 }
                 
-                layergradients[Layers.Length - 1] += gradient;
+                gradients[Layers.Length-1][i] = gradient;
             }
 
-            for(int layer = Layers.Length - 2; layer >= 0; layer--){
+            for(int layer = Layers.Length - 2; layer > 0; layer--){
                 for(int neuron_idx = 0; neuron_idx < Layers[layer]; neuron_idx++){
                     Neuron neuron = Neurons[layer][neuron_idx];
                     double output = neuron.Outputs.Out.Value;
 
-                    double gradient = layergradients[layer+1] * DPhi(neuron.InputSum);
+                    gradient = 0.0;
+
+                    for(int j = 0; j < Layers[layer+1]; j++){
+                        gradient += gradients[layer+1][j] * Neurons[layer+1][j].Weights[neuron_idx];
+                    }
+                    
+                    gradient *= output * (1.0 - output);
 
                     for(int j = 0; j < neuron.NumInputs; j++){
-                        neuron.Weights[j] += -1.0 * LearningRate * output * gradient;
+                        if(layer > 0) delta = -1.0 * LearningRate * Neurons[layer-1][j].Outputs.Out.Value * gradient;
+                        else delta = -1.0 * LearningRate * Inputs[j].Value * gradient;
+                        neuron.Weights[j] += delta;
                     }
 
-                    layergradients[layer] += gradient;
+                    gradients[layer][neuron_idx] = gradient;
                 }
             }
-        }
 
-        public void BackPropagate(double[] Expected, double LearningRate)
-        {
-            BackPropagate(Expected, LearningRate, (a, b) => Math.Pow(Math.Abs(a-b), 2.0) / 2.0, (a, b) => (a-b) * (1.0 - Math.Pow(a, 2.0)));
         }
 
         public override void Compute()
