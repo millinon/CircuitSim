@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2618DBFB-91FD-4BF8-A632-21065EEFA77F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CircuitSim</RootNamespace>
+    <AssemblyName>CircuitSim</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Chips\Chips.cs" />
+    <Compile Include="Chips\Console\Console.cs" />
+    <Compile Include="Chips\Digital\Comparison.cs" />
+    <Compile Include="Chips\Digital\Conversion.cs" />
+    <Compile Include="Chips\Digital\Digital.cs" />
+    <Compile Include="Chips\FloatingPoint\Arithmetic.cs" />
+    <Compile Include="Chips\FloatingPoint\Comparison.cs" />
+    <Compile Include="Chips\FloatingPoint\Conversion.cs" />
+    <Compile Include="Chips\FloatingPoint\FloatingPoint.cs" />
+    <Compile Include="Chips\Input\Input.cs" />
+    <Compile Include="Chips\Integer\Arithmetic.cs" />
+    <Compile Include="Chips\Integer\Comparison.cs" />
+    <Compile Include="Chips\Integer\Conversion.cs" />
+    <Compile Include="Chips\Integer\Integer.cs" />
+    <Compile Include="Chips\List\List.cs" />
+    <Compile Include="Chips\Neural\Neural.cs" />
+    <Compile Include="Chips\Signal\Signal.cs" />
+    <Compile Include="Chips\String\Comparison.cs" />
+    <Compile Include="Chips\String\Conversion.cs" />
+    <Compile Include="Chips\String\String.cs" />
+    <Compile Include="Chips\Time\Conversion.cs" />
+    <Compile Include="Chips\Time\Time.cs" />
+    <Compile Include="CircuitSim.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
