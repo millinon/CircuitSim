@@ -140,6 +140,7 @@ namespace CircuitSim.Chips.Neural
             for(int j = 0; j < NumInputs; j++){
                 Neurons[0][j] = new Neuron(1, r);
                 Neurons[0][j].Weights[0] = 1.0;
+                Neurons[0][j].Outputs.Out.AutoTick = false;
             }
             
             for(int i = 1; i < Layers.Length; i++){
@@ -147,6 +148,7 @@ namespace CircuitSim.Chips.Neural
 
                 for(int j = 0; j < Layers[i]; j++){
                     Neurons[i][j] = new Neuron(Layers[i-1], r);
+                    Neurons[i][j].Outputs.Out.AutoTick = false;
 
                     for(int k = 0; k < Layers[i-1]; k++){
                         Neurons[i][j].Inputs[k].Source = Neurons[i-1][k].Outputs.Out;
@@ -212,7 +214,14 @@ namespace CircuitSim.Chips.Neural
         {
             for(int i = 0; i < NumInputs; i++){
                 Neurons[0][i].Inputs[0] = Inputs[i];
-                Neurons[0][i].Tick();
+            }
+
+            foreach(var layer in Neurons)
+            {
+                foreach(var neuron in layer)
+                {
+                    neuron.Tick();
+                }
             }
         }
 
